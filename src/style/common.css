@@ -6,6 +6,5 @@
     url('../font/HarmonyOS_Sans_Regular.ttf') format('truetype');
 }
 body {
-  background-color: rebeccapurple;
   font-family: HarmonyOS_Sans,Arial, Helvetica, sans-serif;
 }

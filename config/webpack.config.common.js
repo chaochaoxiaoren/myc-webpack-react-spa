@@ -21,7 +21,7 @@ const setMPA = () => {
       new HtmlWebpackPlugin({
         // inlineSource: '.css$',
         template: path.join(__dirname, `../src/pages/${pageName}/index.html`),
-        filename: `${pageName}.html`,
+        filename: `${pageName}/index.html`,
         chunks: [pageName],
         inject: true,
         minify: {
@@ -53,7 +53,7 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.js$/i,
+        test: /\.jsx?$/i,
         exclude: /node_modules/,
         loader: 'babel-loader',
       },
@@ -131,6 +131,8 @@ module.exports = {
     alias: {
       '@': path.resolve(__dirname, '../src'),
            //或者这样写 '@': '/src' => webpack默认会将相对路径与上下文路径进行拼接 => 上下文路径默认就是node运行是的路径 => 对于我来说就是E:node\前端项目\src
+      '@home': path.resolve(__dirname, '../src/pages/home/container'),
+      '@trade': path.resolve(__dirname, '../src/pages/trade/container'),
     },
     extensions: ['.js', '.json', '.ts', '.tsx'], //告诉webpack你引入的文件要寻找哪些后缀的 => 简单来说就是你../index但没有说明是什么后缀的文件(你不设置这里的话好像只会找后缀为js的文件)。
   }
