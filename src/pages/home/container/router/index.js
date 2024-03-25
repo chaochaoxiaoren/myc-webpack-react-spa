@@ -3,6 +3,7 @@ import { createBrowserRouter } from 'react-router-dom';
 import Index from '@home/views/Index/index';
 import Market from '@home/views/Market/index';
 import Doc from '@home/views/Doc/index';
+import Demo from '@home/views/Demo/index';
 import ErrorPage from '@home/components/ErrorPage';
 
 // router 思路：
@@ -26,6 +27,11 @@ const router = createBrowserRouter([
   {
     path: '/home/market',
     element: <Market />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/home/demo',
+    element: <Demo />,
     errorElement: <ErrorPage />,
   },
   {

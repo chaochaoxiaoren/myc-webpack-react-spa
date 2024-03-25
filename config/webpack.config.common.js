@@ -58,6 +58,11 @@ module.exports = {
         loader: 'babel-loader',
       },
       {
+        test: /\.tsx?$/i,
+        exclude: /node_modules/,
+        loader: 'ts-loader',
+      },
+      {
         test: /\.css$/i,
         exclude: /node_modules/,
         use: [
@@ -134,6 +139,6 @@ module.exports = {
       '@home': path.resolve(__dirname, '../src/pages/home/container'),
       '@trade': path.resolve(__dirname, '../src/pages/trade/container'),
     },
-    extensions: ['.js', '.json', '.ts', '.tsx'], //告诉webpack你引入的文件要寻找哪些后缀的 => 简单来说就是你../index但没有说明是什么后缀的文件(你不设置这里的话好像只会找后缀为js的文件)。
+    extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'], //告诉webpack你引入的文件要寻找哪些后缀的 => 简单来说就是你../index但没有说明是什么后缀的文件(你不设置这里的话好像只会找后缀为js的文件)。
   }
 };

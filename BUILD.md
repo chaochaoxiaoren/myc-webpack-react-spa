@@ -33,3 +33,31 @@ npm i react-redux  @reduxjs/toolkit
 6. 简单总结
 此次修改的内容让整个架构支持了react的基本技术栈
 
+## 第二阶段
+支持typescript
+1. 安装
+```
+npm i ts-loader typescript @types/react @types/react-dom -D
+```
+2. 初始化配置，生成tsconfig.json
+```
+tsc --init
+```
+3. 配置webpack.config.common.js
+```
+{
+  test: /\.tsx?$/i,
+  exclude: /node_modules/,
+  loader: 'ts-loader',
+},
+```
+4. 注意ts,tsx文件内直接引入*.css等非ts文件时，会提示找不到文件，这时候需要在根目录下添加声明
+> https://geek-docs.com/typescript/typescript-questions/677_typescript_cant_import_cssscss_modules_typescript_says_cannot_find_module.html
+```
+# 配置globals.d.ts，其他文件类型也是一样的配置
+declare module '*.css';
+declare module '*.ts';
+```
+
+
+
