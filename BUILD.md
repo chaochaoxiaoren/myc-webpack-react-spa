@@ -1,7 +1,7 @@
 # react应用
 单页面和多页面应用都可以在这一个项目里使用
 
-## 第一阶段 安装依赖
+## 第一阶段 react
 1. 安装react，router，mobx
 ```
 npm i react react-dom react-router-dom mobx mobx-react-lite
@@ -33,7 +33,7 @@ npm i react-redux  @reduxjs/toolkit
 6. 简单总结
 此次修改的内容让整个架构支持了react的基本技术栈
 
-## 第二阶段
+## 第二阶段 typescript
 支持typescript
 1. 安装
 ```
@@ -59,5 +59,51 @@ declare module '*.css';
 declare module '*.ts';
 ```
 
+## 第三阶段 less, sass
+1. 安装依赖
+```
+npm i less less-loader sass sass-loader -D
+```
+2. 配置webpack.config.common.js
+```
+{
+  test: /\.less$/i,
+  exclude: /node_modules/,
+  use: [
+    MiniCssExtractPlugin.loader,
+    {
+      loader: 'css-loader',
+      options: {
+        importLoaders: 2, // 表示需要先经过多少loader的处理
+                          // https://webpack.docschina.org/loaders/css-loader/#importloaders 
+                          // 0 => no loaders (default);
+                          // 1 => postcss-loader;
+                          // 2 => less-loader postcss-loader;
+      },
+    },
+    'postcss-loader',
+    'less-loader'
+  ],
+},
+{
+  test: /\.s[ac]ss$/i,
+  exclude: /node_modules/,
+  use: [
+    MiniCssExtractPlugin.loader,
+    {
+      loader: 'css-loader',
+      options: {
+        importLoaders: 2, // 表示需要先经过多少loader的处理
+                          // https://webpack.docschina.org/loaders/css-loader/#importloaders 
+                          // 0 => no loaders (default);
+                          // 1 => postcss-loader;
+                          // 2 => sass-loader postcss-loader;
+      },
+    },
+    'postcss-loader',
+    'sass-loader'
+  ],
+},
+```
 
 
