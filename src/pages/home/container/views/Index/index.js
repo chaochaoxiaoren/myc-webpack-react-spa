@@ -16,6 +16,8 @@ const Index = () => {
       <Link to="/home/market">market</Link> <br />
       <Link to="/home/doc">Doc</Link> <br />
       <Link to="/home/demo">Demo</Link> <br />
+      <Link to="/home/less">Less</Link> <br />
+      <Link to="/home/sass">Sass</Link> <br />
       <button
         onClick={() => {
           navigate('/home/market');

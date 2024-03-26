@@ -4,6 +4,8 @@ import Index from '@home/views/Index/index';
 import Market from '@home/views/Market/index';
 import Doc from '@home/views/Doc/index';
 import Demo from '@home/views/Demo/index';
+import Less from '@home/views/Less';
+import Sass from '@home/views/Sass';
 import ErrorPage from '@home/components/ErrorPage';
 
 // router 思路：
@@ -32,6 +34,16 @@ const router = createBrowserRouter([
   {
     path: '/home/demo',
     element: <Demo />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/home/less',
+    element: <Less />,
+    errorElement: <ErrorPage />,
+  },
+  {
+    path: '/home/sass',
+    element: <Sass />,
     errorElement: <ErrorPage />,
   },
   {

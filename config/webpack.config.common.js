@@ -81,6 +81,44 @@ module.exports = {
         ],
       },
       {
+        test: /\.less$/i,
+        exclude: /node_modules/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 2, // 表示需要先经过多少loader的处理
+                                // https://webpack.docschina.org/loaders/css-loader/#importloaders 
+                                // 0 => no loaders (default);
+                                // 1 => postcss-loader;
+                                // 2 => less-loader postcss-loader;
+            },
+          },
+          'postcss-loader',
+          'less-loader'
+        ],
+      },
+      {
+        test: /\.s[ac]ss$/i,
+        exclude: /node_modules/,
+        use: [
+          MiniCssExtractPlugin.loader,
+          {
+            loader: 'css-loader',
+            options: {
+              importLoaders: 2, // 表示需要先经过多少loader的处理
+                                // https://webpack.docschina.org/loaders/css-loader/#importloaders 
+                                // 0 => no loaders (default);
+                                // 1 => postcss-loader;
+                                // 2 => sass-loader postcss-loader;
+            },
+          },
+          'postcss-loader',
+          'sass-loader'
+        ],
+      },
+      {
         test: /\.(woff|woff2|eot|ttf|otf)$/i,
         type: 'asset/resource',
         generator: {
