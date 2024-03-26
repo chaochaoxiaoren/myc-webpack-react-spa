@@ -167,4 +167,54 @@ npm i stylelint-webpack-plugin -D
 "stylelint": "stylelint  src/**/*.{vue,scss,css,sass,less}",
 "stylelint:fix": "stylelint  src/**/*.{vue,scss,css,sass,less} --fix"
 ```
+## 第六阶段 优化整个项目
+包括整个项目的构建优化，打包优化和结构优化
+1. 优化,压缩css
+安装插件，配置webpack.config.common.js的plugins
+```
+npm install css-minimizer-webpack-plugin --save-dev
+```
+2. 优化，压缩html
+安装插件，配置webpack.config.common.js的plugins
+```
+npm install html-minimizer-webpack-plugin --save-dev
+```
+3. 图片压缩，优化
+```
+npm install image-minimizer-webpack-plugin imagemin --save-dev
+```
+图片压缩主要有两种模式：不失真，失真
+处理的技术也有两种imagemin, squoosh
+此处只使用imagemin，配置webpack.config.common.js的optimization.minimizer
+```
+// 图片质量不会下降
+npm install imagemin-gifsicle imagemin-jpegtran imagemin-optipng imagemin-svgo --save-dev
+// 图片质量下降
+npm install imagemin-gifsicle imagemin-mozjpeg imagemin-pngquant imagemin-svgo --save-dev
+```
+4. json压缩
+安装插件，配置webpack.config.common.js的optimization.minimizer
+```
+npm install json-minimizer-webpack-plugin --save-dev
+```
+将json文件放在单独的文件中可以看到明显变化
+
+5. css提取到文件
+安装插件，这个是常用的将css放置在一个css文件中, 配置 webpack.config.common.js的 plugins 和 module.rules
+```
+npm install --save-dev mini-css-extract-plugin
+```
+
+6. 压缩js代码
+安装插件，配置webpack.config.common.js的optimization.minimizer
+```
+npm install terser-webpack-plugin --save-dev
+```
+
+7. 将打包好的文件进一步压缩成gzip文件，方便服务器开启gzip之后直接使用，减少了服务器的压力
+> 服务器必须开启gzip
+安装插件，配置webpack.config.common.js的plugins
+```
+npm i compression-webpack-plugin -D
+```
 

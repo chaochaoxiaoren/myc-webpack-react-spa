@@ -5,6 +5,14 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
 const StylelintPlugin = require('stylelint-webpack-plugin');
 
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const HtmlMinimizerPlugin = require('html-minimizer-webpack-plugin');
+const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
+const JsonMinimizerPlugin =  require('json-minimizer-webpack-plugin');
+const TerserPlugin = require("terser-webpack-plugin");
+
+const CompressionPlugin = require("compression-webpack-plugin");
+
 const toml = require('toml');
 const yaml = require('yamljs');
 const json5 = require('json5');
@@ -135,6 +143,13 @@ module.exports = {
         }
       },
       {
+        test: /\.json$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: 'json/[hash][ext][query]'
+        }
+      },
+      {
         test: /\.(csv|tsv)$/i,
         use: ['csv-loader']
       },
@@ -176,8 +191,63 @@ module.exports = {
     }),
     new StylelintPlugin({
       extensions: ['.css', '.less', '.sass', '.scss']
-    })
+    }),
+    new CssMinimizerPlugin(),
+    new HtmlMinimizerPlugin(),
+    new CompressionPlugin()
   ],
+  performance: {
+    hints: 'warning',
+    maxEntrypointSize: 40000000,
+    // 生成文件的最大体积
+    maxAssetSize: 20000000,
+    assetFilter: function(assetFilename) {
+      return assetFilename.endsWith('.js')
+    }
+  },
+  optimization: {
+    minimizer: [
+      new ImageMinimizerPlugin({
+        minimizer: {
+          implementation: ImageMinimizerPlugin.imageminMinify,
+          options: {
+            // Lossless optimization with custom option
+            // Feel free to experiment with options for better result for you
+            plugins: [
+              ["gifsicle", { interlaced: true }],
+              ["jpegtran", { progressive: true }],
+              ["optipng", { optimizationLevel: 5 }],
+              // Svgo configuration here https://github.com/svg/svgo#configuration
+              [
+                "svgo",
+                {
+                  plugins: [
+                    {
+                      name: "preset-default",
+                      params: {
+                        overrides: {
+                          removeViewBox: false,
+                          addAttributesToSVGElement: {
+                            params: {
+                              attributes: [
+                                { xmlns: "http://www.w3.org/2000/svg" },
+                              ],
+                            },
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
+              ],
+            ],
+          },
+        },
+      }),
+      new JsonMinimizerPlugin(),
+      new TerserPlugin(),
+    ]
+  },
   resolve: {
     alias: {
       '@': path.resolve(__dirname, '../src'),

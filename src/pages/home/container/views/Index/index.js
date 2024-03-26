@@ -4,10 +4,13 @@ import { observer } from 'mobx-react-lite';
 import useStore from '@home/hooks/useStore';
 import style from './index.module.css';
 import Loading from '@home/components/Loading/index.jsx';
+import bgImage from '@/assets/bg.png';
+import json from '@/assets/data.json';
 
 const Index = () => {
   const navigate = useNavigate();
   console.log('home');
+  console.log('json', json);
   const { countStore } = useStore();
   const { count, computedCount, increment, decrement, reset } = countStore;
 
@@ -65,6 +68,7 @@ const Index = () => {
       ============================================================
       <br />
       <Outlet />
+      <img src={bgImage} />
     </>
   );
 };

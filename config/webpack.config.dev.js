@@ -1,4 +1,5 @@
-const path = require('path');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
+const HtmlMinimizerPlugin = require('html-minimizer-webpack-plugin');
 
 module.exports = {
   mode: 'development',
@@ -17,4 +18,11 @@ module.exports = {
     open: ['/home'],
 	  // historyApiFallback: true //历史路径
   },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new CssMinimizerPlugin(),
+      new HtmlMinimizerPlugin()
+    ]
+  }
 }
