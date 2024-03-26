@@ -138,4 +138,33 @@ src/iconfont
 "eslint": "eslint src",
 "eslint:fix": "eslint src --fix"
 ```
+## 第五阶段 stylelint
+1. 安装
+```
+npm init stylelint
+```
+2. 为了支持less，需要安装和修改配置
+```
+npm i postcss-less -D
+
+# .stylelintrc.json
+{
+  "extends": ["stylelint-config-standard"],
+  "overrides": [
+    {
+      "files": ["*.less"],
+      "customSyntax": "postcss-less"
+    }
+  ]
+}
+```
+3. 安装webpack插件, 并配置需要检查的后缀
+```
+npm i stylelint-webpack-plugin -D
+```
+4. package.json 配置脚本
+```
+"stylelint": "stylelint  src/**/*.{vue,scss,css,sass,less}",
+"stylelint:fix": "stylelint  src/**/*.{vue,scss,css,sass,less} --fix"
+```
 

@@ -3,6 +3,7 @@ const glob = require('glob')
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
+const StylelintPlugin = require('stylelint-webpack-plugin');
 
 const toml = require('toml');
 const yaml = require('yamljs');
@@ -171,7 +172,10 @@ module.exports = {
       filename: '[name].[contenthash].css',
     }),
     new ESLintPlugin({
-      extensions: ['.js','.jsx','.ts','.tsx']
+      extensions: ['.js', '.jsx', '.ts', '.tsx']
+    }),
+    new StylelintPlugin({
+      extensions: ['.css', '.less', '.sass', '.scss']
     })
   ],
   resolve: {
