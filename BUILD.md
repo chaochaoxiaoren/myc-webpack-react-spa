@@ -105,5 +105,37 @@ npm i less less-loader sass sass-loader -D
   ],
 },
 ```
+## 第四阶段 eslint
+规范代码
+1. 初始化配置
+```
+npm init @eslint/config
+// 按照步骤一步一步的选择即可
+```
+2. 安装webpack 插件,并配置后缀（如果不想因为eslint报错影响开发，可以不安装）
+```
+npm i eslint-webpack-plugin -D
+```
+3. 配置.eslintrc.js，.eslintignore
+```
+// .eslintrc.js
+settings: {
+    react: {
+        version: 'detect',
+    },
+},
 
+// .eslintignore
+node_modules
+config
+dist
+postcss.config.js
+babel.config.js
+src/iconfont
+```
+4. package.json 配置脚本, 方便eslint验证，代码修复
+```
+"eslint": "eslint src",
+"eslint:fix": "eslint src --fix"
+```
 
