@@ -217,4 +217,104 @@ npm install terser-webpack-plugin --save-dev
 ```
 npm i compression-webpack-plugin -D
 ```
+## 第七阶段
+继续优化，依旧包括构建优化，打包优化
+1. 给自己代码前后添加注释
+```
+new webpack.BannerPlugin({
+  banner: 'myc-webpack-spa'
+})
+```
+
+2. 为了更好的观察整个打包的文件结构，安装webpack-bundle-analyzer
+```
+npm i webpack-bundle-analyzer -D
+
+// 新增webpack.config.analyze.js文件
+// 配置脚本
+"analyze": "webpack --env analyze -c ./config/webpack.config.js",
+```
+
+3. 配置optimization.splitChunks，拆分更多的chunk文件
+没有使用这种方式，因为导出模块联邦时，这个会有影响，以后再仔细研究
+
+4. 缩短ts-loader构建时间
+```
+npm i fork-ts-checker-webpack-plugin -D
+// webpack.config.common.js，查看他的官方文档，发现ts-loader >=9.3.0时直接使用即可
+new ForkTsCheckerWebpackPlugin()
+```
+
+5. 使用thread-loader加快构建(测试了下，对我的电脑来说有无都没影响，之后可以再细测)
+```
+npm i thread-loader -D
+// 暂时给js 文件加上这个做测试用
+```
+
+6. 模块联邦，可以让其他模块共享功能
+```
+// 提供模块联邦组件配置
+new ModuleFederationPlugin({
+  // 应用名，全局唯一，不可冲突。 
+  name: "component_app",
+  // 暴露的文件名称 
+  filename: "remoteEntry.js",
+  // 远程应用暴露出的模块名。
+  exposes: {
+    "./Dialog": "./src/pages/home/container/components/Dialog/index.jsx",
+  },
+  // shared: [ // 与远程模块共享的模块，与远程模块共同配置，这样在页面中就只会加载一次这个library, 用来避免重复加载第三方依赖
+  //   "react",
+  //   "react-dom"
+  // ]
+}),
+
+// 使用模块联邦组件配置
+new ModuleFederationPlugin({
+  //远程访问地址入口
+  remotes: {
+    "component_app": "component_app@http://localhost:4000/remoteEntry.js",
+  },
+})
+// 组件使用方式Lazy，Suspense
+const Dialog = React.lazy(() => import("component_app/Dialog"))
+<Suspense fallback={<p>loading</p>}>
+  <Dialog />
+</Suspense>
+```
+注意一下问题：   
+两边配置的.browserslistrc可以不一致，但是必须保证导出的组件能在两个项目里正常运行，即表示提供者最好能适配所有浏览器，或使用者要做好兼容性处理。
+
+7. 这次修改有很多小改动帮助项目更好的运行
+```
+// 注释不再单独打包
+new TerserPlugin({
+  extractComments: false, // 注释不会导出成一个单独的文件
+}),
+
+// stylelint 不对class格式做验证
+"rules": {
+  "selector-class-pattern": null
+}
+
+// css-loader配置camelCase: true，允许驼峰、横线链接方式的混合使用
+{
+  loader: 'css-loader',
+  options: {
+    modules: {
+      exportLocalsConvention: 'camelCase',
+    },
+    ...
+  }
+  ...
+}
+
+// 另外一个项目的.browserslistrc 修改，支持带有async/await模块联邦组件
+defaults and fully supports es6
+```
+
+
+
+
+
 

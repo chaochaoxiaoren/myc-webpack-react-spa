@@ -7,6 +7,13 @@ import Loading from '@home/components/Loading/index.jsx';
 import bgImage from '@/assets/bg.png';
 import json from '@/assets/data.json';
 
+// 适合于文件或者对象动态加载
+import(/* webpackChunkName: "Tooltip" */ '@home/components/Tooltip').then(() => {
+  console.log('done');
+}).catch(() => {
+  console.log('error');
+})
+
 const Index = () => {
   const navigate = useNavigate();
   console.log('home');

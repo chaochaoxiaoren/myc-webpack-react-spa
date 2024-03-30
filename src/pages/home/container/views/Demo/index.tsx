@@ -1,6 +1,7 @@
 import React from 'react';
 import style from './index.module.css';
 import { add } from '@home/utils/index.ts';
+import { DatePicker } from 'antd';
 
 interface User {
   name: string,
@@ -10,6 +11,7 @@ interface User {
 const Demo = () => {
 
   console.log(add(1, 2));
+  console.log('sss');
 
   const user = {
     name: '张三',
@@ -20,7 +22,10 @@ const Demo = () => {
     return user.name+user.age
   }
 
-  return <div className={style.container}>{combine(user)}</div>;
+  return <div className={style.container}>
+    <div className={style.userName}>{combine(user)}</div>
+    <DatePicker />
+  </div>;
 };
 
 export default Demo;

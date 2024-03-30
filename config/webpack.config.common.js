@@ -1,5 +1,8 @@
 const path = require('path');
-const glob = require('glob')
+const glob = require('glob');
+const webpack = require('webpack');
+const { ModuleFederationPlugin } = webpack.container;
+
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const ESLintPlugin = require('eslint-webpack-plugin');
@@ -12,6 +15,8 @@ const JsonMinimizerPlugin =  require('json-minimizer-webpack-plugin');
 const TerserPlugin = require("terser-webpack-plugin");
 
 const CompressionPlugin = require("compression-webpack-plugin");
+
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 
 const toml = require('toml');
 const yaml = require('yamljs');
@@ -65,12 +70,24 @@ module.exports = {
       {
         test: /\.jsx?$/i,
         exclude: /node_modules/,
-        loader: 'babel-loader',
+        use: [
+          // {
+          //   loader: 'thread-loader',
+          //   options: {
+          //     workers: require('os').cpus().length - 1,
+          //   }
+          // },
+          'babel-loader'
+        ]
       },
       {
         test: /\.tsx?$/i,
         exclude: /node_modules/,
-        loader: 'ts-loader',
+        use: [
+          {
+            loader: 'ts-loader',
+          }
+        ]
       },
       {
         test: /\.css$/i,
@@ -81,6 +98,9 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
+              modules: {
+                exportLocalsConvention: 'camelCase',
+              },
               importLoaders: 1, // 表示需要先经过多少loader的处理
                                 // https://webpack.docschina.org/loaders/css-loader/#importloaders 
                                 // 0 => no loaders (default);
@@ -98,6 +118,9 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
+              modules: {
+                exportLocalsConvention: 'camelCase',
+              },
               importLoaders: 2, // 表示需要先经过多少loader的处理
                                 // https://webpack.docschina.org/loaders/css-loader/#importloaders 
                                 // 0 => no loaders (default);
@@ -117,6 +140,9 @@ module.exports = {
           {
             loader: 'css-loader',
             options: {
+              modules: {
+                exportLocalsConvention: 'camelCase',
+              },
               importLoaders: 2, // 表示需要先经过多少loader的处理
                                 // https://webpack.docschina.org/loaders/css-loader/#importloaders 
                                 // 0 => no loaders (default);
@@ -183,6 +209,9 @@ module.exports = {
   },
   plugins: [
     ...htmlWebpackPlugins,
+    new webpack.BannerPlugin({
+      banner: 'myc-webpack-spa'
+    }),
     new MiniCssExtractPlugin({
       filename: '[name].[contenthash].css',
     }),
@@ -194,17 +223,40 @@ module.exports = {
     }),
     new CssMinimizerPlugin(),
     new HtmlMinimizerPlugin(),
-    new CompressionPlugin()
+    new CompressionPlugin(),
+    new ForkTsCheckerWebpackPlugin(),
+    new ModuleFederationPlugin({
+      // 应用名，全局唯一，不可冲突
+      name: "component_app",
+      // 暴露的文件名称 
+      filename: "remoteEntry.js",
+      // 远程应用暴露出的模块名
+      exposes: {
+        "./Dialog": "./src/pages/home/container/components/Dialog/index.jsx",
+      },
+      shared: {
+        react: {  
+          singleton: true,  
+          eager: true,
+          requiredVersion: '^18.2.0',  
+        },  
+        'react-dom': {  
+          singleton: true,  
+          eager: true,
+          requiredVersion: '^18.2.0',  
+        },
+      }
+    }),
   ],
-  performance: {
-    hints: 'warning',
-    maxEntrypointSize: 40000000,
-    // 生成文件的最大体积
-    maxAssetSize: 20000000,
-    assetFilter: function(assetFilename) {
-      return assetFilename.endsWith('.js')
-    }
-  },
+  // performance: {
+  //   hints: 'warning',
+  //   maxEntrypointSize: 40000000,
+  //   // 生成文件的最大体积
+  //   maxAssetSize: 20000000,
+  //   assetFilter: function(assetFilename) {
+  //     return assetFilename.endsWith('.js')
+  //   }
+  // },
   optimization: {
     minimizer: [
       new ImageMinimizerPlugin({
@@ -245,8 +297,10 @@ module.exports = {
         },
       }),
       new JsonMinimizerPlugin(),
-      new TerserPlugin(),
-    ]
+      new TerserPlugin({
+        extractComments: false, // 注释不会导出成一个单独的文件
+      }),
+    ],
   },
   resolve: {
     alias: {
