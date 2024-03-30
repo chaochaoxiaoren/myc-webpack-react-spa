@@ -11,8 +11,8 @@ const Index = () => {
   return (
     <>
       <Link to="/home">home</Link>
-      <Suspense fallback={Loading}>
-        <Dialog></Dialog>
+      <Suspense fallback={<Loading />}>
+        <Dialog />
       </Suspense>
     </>
   );

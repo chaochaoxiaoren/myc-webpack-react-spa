@@ -313,6 +313,68 @@ new TerserPlugin({
 defaults and fully supports es6
 ```
 
+## 第八阶段
+继续优化
+1. vscode支持js，jsx，ts，tsx中的路径缩写跳转
+```
+// 配置tsconfig.json，tsconfig.json以前就存在现在就是补充一些配置
+{
+  "paths": {
+    "@/*": ["./src/*"],
+    "@home/*": ["./src/pages/home/container/*"],
+    "@trade/*": ["./src/pages/home/container/*"],
+  },                                             /* 简写路径配置 */
+  "allowJs": true,                               /* 项目中存在js文件就需要配置，否则js的配置不生效 */
+  "outDir": "./dist",                            /* ts文件编译后导出的文件位置，不配置的话也会有其他类型的提示 */
+}
+
+// 新增jsconfig.json，jsconfig.json是tsconfig.json的子集，allowJs：true才会有效
+{
+  "compilerOptions": {
+    "target": "ES6",
+    "jsx": "react",
+    // 基础目录作为项目根目录, 这应该指向包含 `src` 目录的路径
+    "baseUrl": "./",
+    "paths": {
+      // @ 作为 src目录别名
+      "@/*": ["./src/*"],
+      "@home/*": ["./src/pages/home/container/*"],
+      "@trade/*": ["./src/pages/home/container/*"],
+    }
+  },
+  "exclude": ["node_modules", "dist"], // "...其他要排除的目录"
+  "include": ["src/**/*"]
+}
+```
+
+2. 组件异常兜底
+使用ErrorBoundary做兜底逻辑，当前还没有hooks或者函数式组件可以实现，用的还是class组件  
+https://zh-hans.react.dev/reference/react/Component#catching-rendering-errors-with-an-error-boundary  
+```
+// 新增ErrorBoundary，参考链接
+
+// 取消react中属性推倒的限制，不取消的话ErrorBoundary组件内部会有报错问题
+"rules": {
+  "react/prop-types": "off"
+},
+```
+
+3. 支持直接访问单页面路由，关闭错误遮罩层
+```
+devServer: {
+  ...
+  historyApiFallback: {    // 目的是为了处理单页应用的路由问题，使得所有非静态资源请求都使用指定的入口文件，这样单页面应用就可以直接访问路由查看页面了
+    rewrites: [
+      { from: /\//, to: '/home/index.html' },        // from是匹配的路由，to是相对于打包文件夹的路径
+      { from: /\/home\/*/, to: '/home/index.html' },
+      { from: /\/trade\/*/, to: '/trade/index.html' },
+    ],
+  },
+  client: {
+    overlay: false
+  }
+}
+```
 
 
 

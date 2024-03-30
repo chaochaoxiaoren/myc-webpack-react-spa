@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import style from './index.module.css';
-import { add } from '@home/utils/index.ts';
+import { add } from '@home/utils';
 import { DatePicker } from 'antd';
+import ErrorBoundary from '@home/components/ErrorBoundary';
+import TestError from '@home/components/TestError';
+import TestErrorPromise from '@home/components/TestErrorPromise';
 
 interface User {
   name: string,
@@ -25,6 +28,14 @@ const Demo = () => {
   return <div className={style.container}>
     <div className={style.userName}>{combine(user)}</div>
     <DatePicker />
+    {/* ErrorBoundary 是捕获throw抛出的Error  */}
+    <ErrorBoundary>
+      <TestError />
+    </ErrorBoundary>
+    {/* Suspense 是捕获throw抛出的Promise  */}
+    <Suspense fallback={<div>12345678</div>}>
+      <TestErrorPromise />
+    </Suspense>
   </div>;
 };
 
